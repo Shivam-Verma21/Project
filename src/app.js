@@ -4,18 +4,21 @@ import cors from "cors";
 
 const app = express();
 
-app.use(cors({
-    origin: process.env.CORS_ORIGIN
-}));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+  })
+);
 
-app.use(express.json({
-    limit: "20kb"
-}))
+app.use(express.json({ limit: "20kb" }));
+app.use(express.urlencoded({ extended: true, limit: "20kb" }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
-app.use(express.urlencoded({extended:true, limit:"20kb"}))
+//routes import
+import userRouter from "./routes/user.routes.js";
 
-app.use(express.static("public"))
-
-app.use(cookieParser())
+//routes declaration
+app.use("/api/v1/users", userRouter);   //localhost:3000//api/v1/users/register
 
 export { app };
