@@ -17,17 +17,27 @@ const userRegister = asyncHandler(async (req, res) => {
 
   const { username, email, fullName, password } = req.body;
   // console.log(email);
+  // console.log(req.body);
 
   // CHECKING FOR EMPTY FIELDS
-  // if(fullName === ""){
-  //   throw new apiError(400,"Full name is required")
+  // if (
+  //   [fullName, email, username, password].some((field) => field?.trim() === "")
+  // ) {
+  //   throw new apiError(400, "All fields are required");
   // }
-  if (
-    [fullName, email, username, password].some((field) => field?.trim() === "")
-  ) {
-    throw new apiError(400, "All fields are required");
+  if(fullName === ""){
+    throw new apiError(400,"Full name is required!!")
   }
-
+  if(email === ""){
+    throw new apiError(400,"Email is required!!")
+  }
+  if(username === ""){
+    throw new apiError(400,"User name is required!!")
+  }
+  if(password === ""){
+    throw new apiError(400,"Password is required!!")
+  }
+  
   // CHECKING EMAIL
   const strEmail = String(email);
   if (!strEmail.includes("@")) {
@@ -44,7 +54,17 @@ const userRegister = asyncHandler(async (req, res) => {
 
   // CHECKING FOR IMAGES AND AVATAR (AVATAR IS REQD)
   const avatarLocalPath = req.files?.avatar[0]?.path;
-  const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage[0]?.path;
+  // const coverImageLocalPath = req.files?.coverImage?.at(0)?.path;
+
+  // console.log(req.files.avatar);
+  // console.log(req.files.avatar[0].path);
+  // console.log(req.files);
+
+  let coverImageLocalPath;
+  if (req.files && Array.isArray(req.files.coverImage) && req.files.coverImage.length > 0) {
+        coverImageLocalPath = req.files.coverImage[0].path;
+     } 
 
   if (!avatarLocalPath) {
     throw new apiError(400, "Avatar is required");
@@ -64,7 +84,7 @@ const userRegister = asyncHandler(async (req, res) => {
     fullName,
     password,
     avatar: avatar.url,
-    //chekcking for cover image
+    //checking for cover image
     coverImage: coverImage?.url || "",
   });
 
